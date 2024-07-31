@@ -11,6 +11,7 @@
   "dependencies": {
     "@prisma/client": "^5.17.0",
     "autoprefixer": "^10.4.19",
+    "axios": "^1.7.2",
     "daisyui": "^4.12.10",
     "next": "14.2.5",
     "pg": "^8.12.0",

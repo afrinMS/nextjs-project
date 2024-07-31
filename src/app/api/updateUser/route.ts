@@ -3,20 +3,24 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function PATCH(req: NextRequest) {
+export const PATCH = async (req: NextRequest) => {
   try {
-    const { userId, name, email } = await req.json();
-    if (!userId || (!name && !email)) {
+    const { id, name, email, phone } = await req.json();
+    if (!id || (!name && !phone && !email)) {
       return NextResponse.json(
-        { error: "User ID and at least one of name or email are required" },
+        {
+          error:
+            "User ID and at least one of name, phone or email are required",
+        },
         { status: 400 }
       );
     }
 
     const updatedUser = await prisma.user.update({
-      where: { id: Number(userId) },
+      where: { id: Number(id) },
       data: {
         ...(name && { name }),
+        ...(phone && { phone }),
         ...(email && { email }),
       },
     });
@@ -29,4 +33,4 @@ export async function PATCH(req: NextRequest) {
       { status: 500 }
     );
   }
-}
+};

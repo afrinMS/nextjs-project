@@ -3,10 +3,16 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function POST(req: NextRequest) {
-  const { name, email } = await req.json();
+interface UserRequestBody {
+  name: string;
+  email: string;
+  phone: number;
+}
+
+export const POST = async (req: NextRequest) => {
+  const { name, email, phone }: UserRequestBody = await req.json();
   try {
-    const newUser = await prisma.user.create({ data: { name, email } });
+    const newUser = await prisma.user.create({ data: { name, email, phone } });
     return NextResponse.json(newUser, { status: 200 });
   } catch (error) {
     console.error("Error creating user:", error);
@@ -15,4 +21,4 @@ export async function POST(req: NextRequest) {
       { status: 500 }
     );
   }
-}
+};
