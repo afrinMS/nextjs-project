@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+import redis from "@/lib/redis";
 
 const prisma = new PrismaClient();
+const CACHE_KEY = "users_cache";
 
 export const PATCH = async (req: NextRequest) => {
   try {
@@ -24,6 +26,11 @@ export const PATCH = async (req: NextRequest) => {
         ...(email && { email }),
       },
     });
+
+    const cachedUsers = await redis.get(CACHE_KEY);
+    if (cachedUsers) {
+      await redis.del(CACHE_KEY);
+    }
 
     return NextResponse.json(updatedUser, { status: 200 });
   } catch (error) {
